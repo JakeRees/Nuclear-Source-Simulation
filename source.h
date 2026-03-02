@@ -4,7 +4,6 @@
 #include<iostream>
 #include<string>
 #include<cmath>
-#include <chrono>
 #include <ctime>
 
 struct Date {
@@ -36,6 +35,7 @@ public:
   ~source(){std::cout << "\nDestroying " << type << " object" << std::endl;}
   std::string get_name();
   double get_activity();
+  long long get_age(int year, int month, int day);
 
 };
 
