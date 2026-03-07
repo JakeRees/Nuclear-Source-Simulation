@@ -19,7 +19,7 @@ struct Date {
 class source
 {
 private:
-  std::string type {"None"};
+  std::string type = {"None"};
   double initial_activity = {0.0};
   Date aquired = Date(1900, 0, 1);
   int id = {0};
