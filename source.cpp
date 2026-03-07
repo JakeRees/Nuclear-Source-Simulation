@@ -3,15 +3,27 @@
 #include "source.h"
 #include <ctime>
 
-long long days_from_epoch(int y, int m, int d)
+int64_t days_from_epoch(int year, unsigned month, unsigned day)
 {
-  // Returns the number of days distance from the year 1970
-  y -= m <= 2;
-  int64_t era = (y >= 0 ? y : y - 399) / 400;
-  int year = static_cast<unsigned>(y - era * 400);
-  int day_in_year = (153 * (m + (m > 2 ? -3 : 9)) + 2)/5 + d - 1;
-  int day = year * 365 + year/4 - year/100 + day_in_year;
-  return era * 146097 + day - 719468;
+  // returns the time between in days between a given date and 01/03/1970
+
+  // Treat January and February as months of the previous year
+  if (month <= 2) {
+      year -= 1;
+      month += 12;
+  }
+
+  // Gregorian calender repeats every 400 years
+  int era = year / 400;
+
+  // Calculates year within block, day within year, and day within block
+  int year_of_era = year - era * 400;
+  int day_of_year = (153 * (month - 3) + 2) / 5 + day - 1;
+  int days_of_era = year_of_era * 365 + year_of_era / 4 - year_of_era / 100
+                    + day_of_year;
+
+  // Convert to days (146097 days in each block, 719468 days between 0-1970)
+  return era * 146097 + days_of_era - 719468;
 }
 
 long long source::get_age(int year, int month, int day)
