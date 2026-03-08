@@ -2,6 +2,7 @@
 #include<cmath>
 #include "source.h"
 #include <ctime>
+#include <cmath>
 
 int64_t days_from_epoch(int year, unsigned month, unsigned day)
 {
@@ -42,7 +43,19 @@ std::string source::get_name()
 
 double source::get_activity()
 {
-  return initial_activity * std::exp(-2 * half_life / std::log(2));
+  time_t now = time(0);
+  tm* local_time = localtime(&now);
+
+  int year = 1900 + local_time->tm_year;
+  int month = 1 + local_time->tm_mon;
+  int day = local_time->tm_mday;
+  
+  return initial_activity * pow(2.0f, -get_age(year, month, day)/half_life);
+}
+
+double source::get_activity(int year, int month, int day)
+{
+  return initial_activity * pow(2.0f, -get_age(year, month, day)/half_life);
 }
 
 double source::get_initial_activity()

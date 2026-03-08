@@ -28,14 +28,17 @@ private:
 public:
   source() = default ;
 
-  source(std::string particle_type, double activity, Date initial_aquired) :
-    name{particle_type}, initial_activity{activity}, aquired{initial_aquired}
+  source(std::string particle_type, double activity, Date initial_aquired,
+         double half_life) :
+    name{particle_type}, initial_activity{activity}, aquired{initial_aquired},
+    half_life{half_life}
     {}
 
   ~source(){std::cout << "\nDestroying " << name << " object" << std::endl;}
 
   std::string get_name();
   double get_activity();
+  double get_activity(int year, int month, int day);
   double get_initial_activity();
   int get_id();
   double get_half_life();
