@@ -15,7 +15,6 @@ int main()
   std::cout << "Source name: " << target_source.get_name();
   std::cout << "\nDetector name: " << current_detector.get_name();
 
-
   std::time_t t = std::time(nullptr);
   std::tm* now = std::localtime(&t);
   std::cout << "\nSource age: " << target_source.get_age(now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);

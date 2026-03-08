@@ -19,7 +19,7 @@ struct Date {
 class source
 {
 private:
-  std::string type = {"None"};
+  std::string name = {"None"};
   double initial_activity = {0.0};
   Date aquired = Date(1900, 0, 1);
   int id = {0};
@@ -29,13 +29,22 @@ public:
   source() = default ;
 
   source(std::string particle_type, double activity, Date initial_aquired) :
-    type{particle_type}, initial_activity{activity}, aquired{initial_aquired}
+    name{particle_type}, initial_activity{activity}, aquired{initial_aquired}
     {}
 
-  ~source(){std::cout << "\nDestroying " << type << " object" << std::endl;}
+  ~source(){std::cout << "\nDestroying " << name << " object" << std::endl;}
+
   std::string get_name();
   double get_activity();
+  double get_initial_activity();
+  int get_id();
+  double get_half_life();
   long long get_age(int year, int month, int day);
+
+  void set_name(std::string new_name);
+  void set_initial_activity(double new_activity);
+  void set_id(int new_id);
+  void set_half_life(double new_half_life);
 
 };
 

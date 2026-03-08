@@ -37,10 +37,45 @@ long long source::get_age(int year, int month, int day)
 
 std::string source::get_name()
 {
-  return type;
+  return name;
 }
 
 double source::get_activity()
 {
   return initial_activity * std::exp(-2 * half_life / std::log(2));
+}
+
+double source::get_initial_activity()
+{
+  return initial_activity;
+}
+
+int source::get_id()
+{
+  return id;
+}
+
+double source::get_half_life()
+{
+  return half_life;
+}
+
+void source::set_name(std::string new_name)
+{
+  name = new_name;
+}
+
+void source::set_initial_activity(double new_activity)
+{
+  initial_activity = new_activity;
+}
+
+void source::set_id(int new_id)
+{
+  id = new_id;
+}
+
+void source::set_half_life(double new_half_life)
+{
+  half_life = new_half_life;
 }

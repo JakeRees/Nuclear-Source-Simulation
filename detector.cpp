@@ -4,5 +4,10 @@
 
 std::string detector::get_name()
 {
-  return type;
+  return name;
+}
+
+void detector::flip_status()
+{
+  on = !on;
 }

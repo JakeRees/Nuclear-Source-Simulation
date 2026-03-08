@@ -10,7 +10,7 @@
 class detector
 {
 private:
-  std::string type = {"None"};
+  std::string name = {"None"};
   bool on = {false};
   Date turned_on = {Date(0, 1, 1)};
 
@@ -18,11 +18,13 @@ public:
   detector() = default ;
 
   detector(std::string detector_type) :
-    type{detector_type}
+    name{detector_type}
     {}
 
-  ~detector(){std::cout << "\nDestroying " << type << " object" << std::endl;}
+  ~detector(){std::cout << "\nDestroying " << name << " object" << std::endl;}
   std::string get_name();
+  void flip_status();
+
 
 };
 
