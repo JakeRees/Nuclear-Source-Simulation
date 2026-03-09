@@ -11,7 +11,7 @@ class Detector
 {
 private:
   std::string type = {"None"};
-  bool on = {false};
+  bool is_on = {false};
   Date turned_on = {Date(0, 1, 1)};
   int total_counts;
 
@@ -22,9 +22,10 @@ public:
     type{detector_type}
     {}
 
-  ~Detector(){std::cout << "\nDestroying " << type << " object" << std::endl;}
+  ~Detector(){}
   std::string get_type();
   void flip_status();
+  int measure(Source source, double time);
 
 
 };

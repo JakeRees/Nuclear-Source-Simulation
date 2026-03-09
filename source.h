@@ -43,7 +43,6 @@ public:
   ~Source()
   {
     used_ids.erase(id);
-    std::cout << "\nDestroying " << type << " object" << std::endl;
   }
 
   std::string get_type();

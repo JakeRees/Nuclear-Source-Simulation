@@ -89,7 +89,7 @@ void Source::set_initial_activity(double new_activity)
 {
   if (new_activity < 0)
   {
-    std::cout << "\033[1;31mError: Activity must be positive\033[0m\n" << std::endl;
+    std::cout << "\033[1;31mError: Activity must be positive\033[0m" << std::endl;
     return;
   }
 
@@ -99,7 +99,7 @@ void Source::set_initial_activity(double new_activity)
 void Source::set_id(int new_id) {
     if (used_ids.count(new_id)) {
         std::cerr << "\033[1;31mError: ID " << new_id 
-                  << " is already in use\033[0m\n" << std::endl;
+                  << " is already in use\033[0m" << std::endl;
         
     } else {
         used_ids.insert(new_id);
@@ -111,7 +111,7 @@ void Source::set_half_life(double new_half_life)
 {
   if (new_half_life < 0)
   {
-    std::cout << "\033[1;31mError: Half life must be positive\033[0m\n" << std::endl;
+    std::cout << "\033[1;31mError: Half life must be positive\033[0m" << std::endl;
     return;
   }
 
