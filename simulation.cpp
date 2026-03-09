@@ -2,18 +2,19 @@
 #include<iomanip>
 #include <ctime>
 #include <chrono>
-#include "source.h"
+#include "Source.h"
 #include "detector.h"
 
 int main()
 {
 
   // Instantiate material (later using config file) here
-  source target_source = source("NA-22", 14234544, Date(1954, 4, 14), 31536000*10);
-  detector current_detector = detector("Scintillator");
+  Source target_source = Source("NA-22", 14234544, Date(1954, 4, 14), 31536000*10, 1);
+  Source target_source_two = Source("NA-22", 14234544, Date(1954, 4, 14), 31536000*10, 1);
+  Detector current_detector = Detector("Scintillator");
 
-  std::cout << "Source name: " << target_source.get_name();
-  std::cout << "\nDetector name: " << current_detector.get_name();
+  std::cout << "Source name: " << target_source.get_type();
+  std::cout << "\nDetector name: " << current_detector.get_type();
 
   std::time_t t = std::time(nullptr);
   std::tm* now = std::localtime(&t);

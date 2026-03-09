@@ -5,6 +5,7 @@
 #include<string>
 #include<cmath>
 #include <ctime>
+#include <set>
 
 struct Date {
     int year;
@@ -16,27 +17,36 @@ struct Date {
       {}
 };
 
-class source
+class Source
 {
 private:
-  std::string name = {"None"};
+  std::string type = {"None"};
   double initial_activity = {0.0};
   Date aquired = Date(1900, 0, 1);
   int id = {0};
+  static std::set<int> used_ids;
   double half_life = {1.0};
 
 public:
-  source() = default ;
+  Source() = default ;
 
-  source(std::string particle_type, double activity, Date initial_aquired,
-         double half_life) :
-    name{particle_type}, initial_activity{activity}, aquired{initial_aquired},
-    half_life{half_life}
-    {}
+  Source(std::string source_type, double activity, Date initial_acquired,
+        double half_life, int source_id)
+  {
+      set_type(source_type);
+      set_initial_activity(activity);
+      aquired = initial_acquired;
+      set_half_life(half_life);
+      set_id(source_id);
+  }
 
-  ~source(){std::cout << "\nDestroying " << name << " object" << std::endl;}
+  ~Source()
+  {
+    used_ids.erase(id);
+    std::cout << "\nDestroying " << type << " object" << std::endl;
+  }
 
-  std::string get_name();
+  std::string get_type();
   double get_activity();
   double get_activity(int year, int month, int day);
   double get_initial_activity();
@@ -44,7 +54,7 @@ public:
   double get_half_life();
   long long get_age(int year, int month, int day);
 
-  void set_name(std::string new_name);
+  void set_type(std::string new_type);
   void set_initial_activity(double new_activity);
   void set_id(int new_id);
   void set_half_life(double new_half_life);

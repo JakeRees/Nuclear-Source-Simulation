@@ -1,12 +1,16 @@
 #include<iostream>
 #include<cmath>
-#include "source.h"
+#include "Source.h"
 #include <ctime>
 #include <cmath>
+#include <set>
+
+// This set is shared across all source objects
+std::set<int> Source::used_ids;
 
 int64_t days_from_epoch(int year, unsigned month, unsigned day)
 {
-  // returns the time between in days between a given date and 01/03/1970
+  // Returns the time between in days between a given date and 01/03/1970
 
   // Treat January and February as months of the previous year
   if (month <= 2) {
@@ -27,7 +31,7 @@ int64_t days_from_epoch(int year, unsigned month, unsigned day)
   return era * 146097 + days_of_era - 719468;
 }
 
-long long source::get_age(int year, int month, int day)
+long long Source::get_age(int year, int month, int day)
 {
   // Returns the difference in seconds between source aquiry date and given date
   int64_t days1 = days_from_epoch(aquired.year, aquired.month, aquired.day);
@@ -36,13 +40,14 @@ long long source::get_age(int year, int month, int day)
   return (days2 - days1) * 86400LL; // seconds
 }
 
-std::string source::get_name()
+std::string Source::get_type()
 {
-  return name;
+  return type;
 }
 
-double source::get_activity()
+double Source::get_activity()
 {
+  // Calculates the source activity at the current date
   time_t now = time(0);
   tm* local_time = localtime(&now);
 
@@ -53,42 +58,62 @@ double source::get_activity()
   return initial_activity * pow(2.0f, -get_age(year, month, day)/half_life);
 }
 
-double source::get_activity(int year, int month, int day)
+double Source::get_activity(int year, int month, int day)
 {
+  // Calculates the source activity at a given date
+  if ((year < aquired.year) ||  (month < aquired.month) || (day < aquired.day)) return 0.0;
   return initial_activity * pow(2.0f, -get_age(year, month, day)/half_life);
 }
 
-double source::get_initial_activity()
+double Source::get_initial_activity()
 {
   return initial_activity;
 }
 
-int source::get_id()
+int Source::get_id()
 {
   return id;
 }
 
-double source::get_half_life()
+double Source::get_half_life()
 {
   return half_life;
 }
 
-void source::set_name(std::string new_name)
+void Source::set_type(std::string new_type)
 {
-  name = new_name;
+  type = new_type;
 }
 
-void source::set_initial_activity(double new_activity)
+void Source::set_initial_activity(double new_activity)
 {
+  if (new_activity < 0)
+  {
+    std::cout << "\033[1;31mError: Activity must be positive\033[0m\n" << std::endl;
+    return;
+  }
+
   initial_activity = new_activity;
 }
 
-void source::set_id(int new_id)
-{
-  id = new_id;
+void Source::set_id(int new_id) {
+    if (used_ids.count(new_id)) {
+        std::cerr << "\033[1;31mError: ID " << new_id 
+                  << " is already in use\033[0m\n" << std::endl;
+        
+    } else {
+        used_ids.insert(new_id);
+        id = new_id;
+    }
 }
 
-void source::set_half_life(double new_half_life)
+void Source::set_half_life(double new_half_life)
 {
+  if (new_half_life < 0)
+  {
+    std::cout << "\033[1;31mError: Half life must be positive\033[0m\n" << std::endl;
+    return;
+  }
+
   half_life = new_half_life;
 }

@@ -1,13 +1,13 @@
 #include<iostream>
 #include<cmath>
-#include "detector.h"
+#include "Detector.h"
 
-std::string detector::get_name()
+std::string Detector::get_type()
 {
-  return name;
+  return type;
 }
 
-void detector::flip_status()
+void Detector::flip_status()
 {
   on = !on;
 }

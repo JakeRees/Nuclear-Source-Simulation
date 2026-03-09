@@ -5,24 +5,25 @@
 #include<string>
 #include<cmath>
 #include <ctime>
-#include "source.h"
+#include "Source.h"
 
-class detector
+class Detector
 {
 private:
-  std::string name = {"None"};
+  std::string type = {"None"};
   bool on = {false};
   Date turned_on = {Date(0, 1, 1)};
+  int total_counts;
 
 public:
-  detector() = default ;
+  Detector() = default ;
 
-  detector(std::string detector_type) :
-    name{detector_type}
+  Detector(std::string detector_type) :
+    type{detector_type}
     {}
 
-  ~detector(){std::cout << "\nDestroying " << name << " object" << std::endl;}
-  std::string get_name();
+  ~Detector(){std::cout << "\nDestroying " << type << " object" << std::endl;}
+  std::string get_type();
   void flip_status();
 
 
