@@ -42,7 +42,7 @@ long long Source::get_age(int year, int month, int day)
 
 long long Source::get_age()
 {
-
+  // Returns the difference in seconds between source aquiry date and current date
   time_t now = time(0);
   tm* local_time = localtime(&now);
 
@@ -106,6 +106,7 @@ void Source::set_initial_activity(double new_activity)
 
 void Source::set_id(int new_id) 
 {
+  // Source id must be unique
   int original_id = new_id;
   while (used_ids.count(new_id)) 
   {

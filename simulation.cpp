@@ -1,3 +1,11 @@
+/*
+                              Jake Rees, 11307374
+                           University of Manchester
+
+This program reads, uses source and detector objects generated with information
+given in a config file to run a basic nuclear decay detection simulation.
+*/
+
 #include<iostream>
 #include<iomanip>
 #include <ctime>
@@ -95,9 +103,6 @@ void read_config(string file_name, vector<Source>& sources, std::optional<Detect
 int main()
 {
 
-  // Instantiate material (later using config file) here
-  //Source target_source = Source("NA-22", 1000, Date(2025, 4, 14), 31536000, 1);
-  //Source target_source_two = Source("CO-50", 500, Date(2022, 1, 3), 2354345, 1);
   vector<Source> sources; 
   std::optional<Detector> detector = std::nullopt;
 
@@ -129,21 +134,4 @@ int main()
 
   std::cout << "A total of " << long_count << " counts where detected by this detector"
             << " over a total of " << long_simulation_time << " seconds\n";
-  
-
-
-
-  //std::cout << "Source name: " << target_source.get_type();
-  
-
-  //std::cout << "Detected Counts: " << current_detector.measure(target_source, 1);
-  //current_detector.flip_status();
-  //std::cout << "Detected Counts: " <<  current_detector.measure(target_source, 1);
-
-  //std::time_t t = std::time(nullptr);
-  //std::tm* now = std::localtime(&t);
-  //std::cout << "\nSource age: " << target_source.get_age(now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
-  //std::cout << "\nSource activity: " << target_source.get_activity();
-
-  // Run simulation here
 }
