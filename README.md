@@ -1,9 +1,9 @@
-#Nuclear Source Simulation
+# Nuclear Source Simulation
 Includes a source class and detector class, through which simple nuclear decay simulations can be ran. An example test simulation is included in simulation.cpp, with input from a config file.
 
-##Development Timeline
+## Development Timeline
 
-###Disclosure of Delegation to Generative AI:
+### Disclosure of Delegation to Generative AI:
 
 The authors declare the use of generative AI in the research and writing process. According to the GAIDeT taxonomy (2025), the following tasks were delegated to GAI tools under full human supervision:
 
@@ -16,7 +16,7 @@ Declaration submitted by: Jake Rees
 
 Additional note: I used GAI to aid in the creation of the days_from_epoch function in the source class. Formally for help with creating an algorithm which works for any year and accounts for all calendar peculiarities. The code was written by me, the algorithm was generated.
 
-###Description of development
+### Description of development
 
 **Note: Sources given in slide includes Co-92, which isn't a real isotope of Cobalt, so I changed this to Co-60, a real isotope used in nuclear physics.**
 
@@ -26,9 +26,16 @@ I added input validation to the setter methods for source, and used the methods 
 
 The config file used was a simple text file with space separators for each value and an identifier to determine source from detector. To read this file I added a function to the main cpp file, which also validates input from the config file to ensure it is as expected. Initially had trouble with creating sources with the same ids, but found this was because every line of the config file it read it created and destroyed a local copy of a source object. This meant it removed the id from the set of used_ids within the destructor each time, causing the used_ids set to always be empty. This was fixed by bypassing creating a local copy using vector.emplace_back() instead of vector.push_back().
 
-##How to use config file
+## How to use this program
+
+### How to change the config file
 
 Values in each line are separated either by a space " " or a comma ","
 Lines in the config file are identified by the type identifier string located in the first column:
 SOURCE - creates a source object with values: ID Activity HalfLife AquiryDate Name
-DETECTOR - creates a detector object with values: Name
+DETECTOR - creates a detector object with values: Name, Efficiency
+SIMULATION - runs a simulation for all sources with parameters: Time, Detector
+
+### How the main() function works
+
+This function reads the config file using the read_config() function. It then outputs the information for all objects that were successfully read from the config file, and passes them in the detector object to measure a simulated random count using the source activity at that time.
