@@ -65,7 +65,7 @@ void read_config(string file_name, vector<Source>& sources, Detector& detector)
         // Remove leading whitespace
         name.erase(0, name.find_first_not_of(" "));
 
-        sources.push_back(Source(name, activity, Date(year, month, day), half_life, id));
+        sources.emplace_back(name, activity, Date(year, month, day), half_life, id);
       }
       else
       {
@@ -91,8 +91,8 @@ int main()
 {
 
   // Instantiate material (later using config file) here
-  //Source target_source = Source("NA-22", 14234544, Date(2025, 4, 14), 31536000*10, 1);
-  //Source target_source_two = Source("NA-22", 14234544, Date(2025, 4, 14), 31536000*10, 2);
+  //Source target_source = Source("NA-22", 1000, Date(2025, 4, 14), 31536000, 1);
+  //Source target_source_two = Source("CO-50", 500, Date(2022, 1, 3), 2354345, 1);
   vector<Source> sources; 
   Detector detector;
 
@@ -101,7 +101,7 @@ int main()
 
   for (int i = 0; i < source_count; i++)
   {
-    cout << sources[i].get_type() << std::endl;
+    cout << sources[i].get_id() << std::endl;
   }
 
   //std::cout << "Source name: " << target_source.get_type();

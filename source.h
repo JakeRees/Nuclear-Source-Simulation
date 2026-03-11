@@ -33,16 +33,18 @@ public:
   Source(std::string source_type, double activity, Date initial_acquired,
         double half_life, int source_id)
   {
-      set_type(source_type);
-      set_initial_activity(activity);
-      aquired = initial_acquired;
-      set_half_life(half_life);
-      set_id(source_id);
+    set_type(source_type);
+    set_initial_activity(activity);
+    aquired = initial_acquired;
+    set_half_life(half_life);
+    set_id(source_id);
   }
 
-  ~Source()
+  ~Source() 
   {
-    used_ids.erase(id);
+    if (used_ids.count(id)) {
+      used_ids.erase(id);
+    }
   }
 
   std::string get_type();

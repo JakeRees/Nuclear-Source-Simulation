@@ -96,15 +96,23 @@ void Source::set_initial_activity(double new_activity)
   initial_activity = new_activity;
 }
 
-void Source::set_id(int new_id) {
-    if (used_ids.count(new_id)) {
-        std::cerr << "\033[1;31mError: ID " << new_id 
-                  << " is already in use\033[0m" << std::endl;
+void Source::set_id(int new_id) 
+{
+  int original_id = new_id;
+  while (used_ids.count(new_id)) 
+  {
+    new_id++;
+  }
+
+  if (new_id != original_id) 
+  {
+    std::cerr << "\033[1;33mWarning: ID " << original_id 
+              << " was already in use, assigning ID "
+              << new_id << " instead\033[0m" << std::endl;
         
-    } else {
-        used_ids.insert(new_id);
-        id = new_id;
-    }
+  } 
+  used_ids.insert(new_id);
+  id = new_id;
 }
 
 void Source::set_half_life(double new_half_life)
