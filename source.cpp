@@ -40,6 +40,22 @@ long long Source::get_age(int year, int month, int day)
   return (days2 - days1) * 86400LL; // seconds
 }
 
+long long Source::get_age()
+{
+
+  time_t now = time(0);
+  tm* local_time = localtime(&now);
+
+  int year = 1900 + local_time->tm_year;
+  int month = 1 + local_time->tm_mon;
+  int day = local_time->tm_mday;
+
+  int64_t days1 = days_from_epoch(aquired.year, aquired.month, aquired.day);
+  int64_t days2 = days_from_epoch(year, month, day);
+
+  return (days2 - days1) * 86400LL;
+}
+
 std::string Source::get_type()
 {
   return type;
@@ -47,15 +63,7 @@ std::string Source::get_type()
 
 double Source::get_activity()
 {
-  // Calculates the source activity at the current date
-  time_t now = time(0);
-  tm* local_time = localtime(&now);
-
-  int year = 1900 + local_time->tm_year;
-  int month = 1 + local_time->tm_mon;
-  int day = local_time->tm_mday;
-  
-  return initial_activity * pow(2.0f, -get_age(year, month, day)/half_life);
+  return initial_activity * pow(2.0f, -get_age()/half_life);
 }
 
 double Source::get_activity(int year, int month, int day)

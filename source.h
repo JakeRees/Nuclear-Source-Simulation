@@ -54,6 +54,7 @@ public:
   int get_id();
   double get_half_life();
   long long get_age(int year, int month, int day);
+  long long get_age();
 
   void set_type(std::string new_type);
   void set_initial_activity(double new_activity);

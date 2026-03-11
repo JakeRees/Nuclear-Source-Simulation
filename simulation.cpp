@@ -103,14 +103,38 @@ int main()
 
   read_config("config.txt", sources, detector);
   int source_count = sources.size();
+  
+  int count = 0;
+  int long_count = 0;
+  int simulation_time = 1;
+  int long_simulation_time = 86400;
+  (*detector).flip_status();
 
   for (int i = 0; i < source_count; i++)
   {
-    cout << sources[i].get_id() << std::endl;
+    cout << sources[i].get_type() << " (Id: " << sources[i].get_id() << "): " 
+        << "\nSource Age: " << sources[i].get_age() / 86400.0 / 365.0 << " years"
+        << "\nHalf Life: " << sources[i].get_half_life() / 86400.0 / 365.0 << " years"
+        << "\nInitial Activity: " << sources[i].get_initial_activity()
+        << "\nCurrent Activity: " << sources[i].get_activity() << "\n\n";
+
+        count += (*detector).measure(sources[i], simulation_time);
+        long_count += (*detector).measure(sources[i], long_simulation_time);
   }
 
+  std::cout << "Detector name: " << (*detector).get_type() << "\n\n";
+
+  std::cout << "A total of " << count << " counts where detected by this detector"
+            << " over a total of " << simulation_time << " seconds\n\n";
+
+  std::cout << "A total of " << long_count << " counts where detected by this detector"
+            << " over a total of " << long_simulation_time << " seconds\n";
+  
+
+
+
   //std::cout << "Source name: " << target_source.get_type();
-  std::cout << "\nDetector name: " << (*detector).get_type();
+  
 
   //std::cout << "Detected Counts: " << current_detector.measure(target_source, 1);
   //current_detector.flip_status();
