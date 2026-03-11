@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <optional>
 #include "Source.h"
 #include "Detector.h"
 using std::cout;
@@ -12,7 +13,7 @@ using std::cin;
 using std::string;
 using std::vector;
 
-void read_config(string file_name, vector<Source>& sources, Detector& detector)
+void read_config(string file_name, vector<Source>& sources, std::optional<Detector>& detector)
 {
   /* Open a file and read the coloumns*/
   std::ifstream file(file_name);
@@ -74,16 +75,20 @@ void read_config(string file_name, vector<Source>& sources, Detector& detector)
     }
     else if (identifier == "DETECTOR")
     {
+      if (!detector.has_value())
+      {
+        string name;
+        std::getline(converter, name);
 
-      string name;
-      std::getline(converter, name);
-
-      // Remove leading whitespace
-      name.erase(0, name.find_first_not_of(" "));
-      detector = Detector(name);
-
+        // Remove leading whitespace
+        name.erase(0, name.find_first_not_of(" "));
+        detector = Detector(name);
+      }
+      else
+      {
+        cout << "\033[1;33mWarning: Attempted to create multiple detector objects\033[0m";
+      }
     }
-
   }
 }
 
@@ -94,7 +99,7 @@ int main()
   //Source target_source = Source("NA-22", 1000, Date(2025, 4, 14), 31536000, 1);
   //Source target_source_two = Source("CO-50", 500, Date(2022, 1, 3), 2354345, 1);
   vector<Source> sources; 
-  Detector detector;
+  std::optional<Detector> detector = std::nullopt;
 
   read_config("config.txt", sources, detector);
   int source_count = sources.size();
@@ -105,7 +110,7 @@ int main()
   }
 
   //std::cout << "Source name: " << target_source.get_type();
-  //std::cout << "\nDetector name: " << current_detector.get_type();
+  std::cout << "\nDetector name: " << (*detector).get_type();
 
   //std::cout << "Detected Counts: " << current_detector.measure(target_source, 1);
   //current_detector.flip_status();

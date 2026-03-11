@@ -108,7 +108,7 @@ void Source::set_id(int new_id)
   {
     std::cerr << "\033[1;33mWarning: ID " << original_id 
               << " was already in use, assigning ID "
-              << new_id << " instead\033[0m" << std::endl;
+              << new_id << " to " << type << " instead\033[0m" << std::endl;
         
   } 
   used_ids.insert(new_id);
