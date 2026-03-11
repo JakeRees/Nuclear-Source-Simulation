@@ -85,18 +85,38 @@ void read_config(string file_name, vector<Source>& sources, std::optional<Detect
     {
       if (!detector.has_value())
       {
-        string name;
-        std::getline(converter, name);
+        double efficiency;
 
-        // Remove leading whitespace
+        if (converter >> efficiency)
+        {
+          string name;
+          std::getline(converter, name);
+
+          // Remove leading whitespace
         name.erase(0, name.find_first_not_of(" "));
-        detector = Detector(name);
+        detector = Detector(name, efficiency);
+        }
+        else
+        {
+          bad_lines.push_back(line_number);
+        }
       }
       else
       {
         cout << "\033[1;33mWarning: Attempted to create multiple detector objects\033[0m";
       }
     }
+  }
+
+  if (!bad_lines.empty())
+  {
+    cout << "\033[1;33mWarning: Couldn't read data from following lines: ";
+    for (std::size_t i = 0; i < bad_lines.size(); i++)
+    {
+      cout << bad_lines[i] << ", ";
+    }
+
+    cout << "these lines have been skipped\033[0m\n";
   }
 }
 
@@ -127,11 +147,18 @@ int main()
         long_count += (*detector).measure(sources[i], long_simulation_time);
   }
 
-  std::cout << "Detector name: " << (*detector).get_type() << "\n\n";
+  std::cout << "Detector name: " << (*detector).get_type()
+            << " | Efficiency: " << (*detector).get_efficiency() << "\n\n";
 
   std::cout << "A total of " << count << " counts where detected by this detector"
-            << " over a total of " << simulation_time << " seconds\n\n";
+            << " over a total of " << simulation_time << " seconds\n";
+
+  std::cout << "Real estimated count: " << count / (*detector).get_efficiency()
+            << "\n\n";     
 
   std::cout << "A total of " << long_count << " counts where detected by this detector"
             << " over a total of " << long_simulation_time << " seconds\n";
+
+  std::cout << "Real estimated count: " << long_count / (*detector).get_efficiency()
+            << "\n\n"; 
 }

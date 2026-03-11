@@ -31,10 +31,12 @@ The config file used was a simple text file with space separators for each value
 ### How to change the config file
 
 Values in each line are separated either by a space " " or a comma ","
+
 Lines in the config file are identified by the type identifier string located in the first column:
-SOURCE - creates a source object with values: ID Activity HalfLife AquiryDate Name
-DETECTOR - creates a detector object with values: Name, Efficiency
-SIMULATION - runs a simulation for all sources with parameters: Time, Detector
+
+- SOURCE - creates a source object with values: ID Activity HalfLife AquiryDate Name
+- DETECTOR - creates a detector object with values: Name, Efficiency
+- SIMULATION - runs a simulation for all sources with parameters: Time, Detector
 
 ### How the main() function works
 
