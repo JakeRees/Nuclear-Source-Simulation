@@ -76,8 +76,15 @@ double Source::get_activity()
 double Source::get_activity(int year, int month, int day)
 {
   // Calculates the source activity at a given date
-  if ((year < aquired.year) ||  (month < aquired.month) || (day < aquired.day)) return 0.0;
+  if ((year < aquired.year) ||  (month < aquired.month) || (day < aquired.day))
+    return 0.0;
+  
   return initial_activity * pow(2.0f, -get_age(year, month, day)/half_life);
+}
+
+Date Source::get_aquiry_date()
+{
+  return aquired;
 }
 
 double Source::get_initial_activity()
@@ -98,6 +105,20 @@ double Source::get_half_life()
 void Source::set_type(std::string new_type)
 {
   type = new_type;
+}
+
+void Source::set_aquiry_date(Date date)
+{
+  // Make sure date is a valid calender date
+  if (!aquired.is_valid_date(date.year, date.month, date.day))
+  { 
+    std::cout << "\033[1;31mError: Date is not valid for " << get_type() 
+              << ". The default date of 1900-01-01 has been used. \033[0m"
+              << std::endl;
+    return;
+  }
+
+  aquired.year = date.year, aquired.month = date.month, aquired.day = date.day;
 }
 
 void Source::set_initial_activity(double new_activity)

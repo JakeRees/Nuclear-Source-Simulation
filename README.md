@@ -16,6 +16,8 @@ Declaration submitted by: Jake Rees
 
 Additional note: I used GAI to aid in the creation of the days_from_epoch function in the source class. Formally for help with creating an algorithm which works for any year and accounts for all calendar peculiarities. The code was written by me, the algorithm was generated.
 
+All other code was written and designed by me with the aid of the internet.
+
 ### Description of development
 
 **Note: Sources given in slide includes Co-92, which isn't a real isotope of Cobalt, so I changed this to Co-60, a real isotope used in nuclear physics.**
@@ -34,7 +36,36 @@ This program generates realistic count measurements for a given detector (with a
 
 The attached simulation.cpp file contains an example simulation to test all given sources across any simulation parameters set in config.txt.
 
-### How to change the config file
+### Class Documentation
+
+<ins>Source:</ins>
+This class is a blueprint for nuclear source-type elements.
+
+**Attributes:**
+-string type: The name of the source/element (e.g. Na-22)
+-int id: A unique number attached to each object used for identification.
+-double initial_activity: The activity of the source at the time of acquisition.
+-Date aquired: the date at which the source was aquired - a struct containing the year, month and day.
+-double half_life: A number representing the rate of decay of the source.
+-decay_type: What type of decay process does each source perform (gamma, beta, alpha).
+
+**Methods:**
+-long long get_age(Date date): Returns the age of the source object for a given date in seconds
+-long long get_activity(Date date): Returns the activity of the source object for a given date in decays/second
+
+<ins>Detector:</ins>
+This class is a blueprint for detector-type objects, which can be used to simulate measurements of the source objects.
+
+**Attributes:**
+-string type: The type of detector (e.g. Scintillator).
+-bool is_on: Determins the on/off status of the detector (Measurements can only be performed when on).
+-int total_counts: Stores the total counts over all measurements until reset.
+-Efficiency efficiency: A struct containing the detector efficiency for each decay type (gamma, beta, alpha).
+
+**Methods:**
+-long long measure(Source source, double time): Returns a random count measurement over a given time using a poisson distribution.
+
+### How to modify the config file
 
 Values in each line are separated either by a space " " or a comma ","
 
@@ -44,7 +75,7 @@ Lines in the config file are identified by the type identifier string located in
 - DETECTOR - creates a detector object with values: Name, GammaEfficiency, BetaEfficiency, AlphaEfficiency
 - SIMULATION - runs a simulation for all sources with parameters: Time, Detector
 
-Any number of detectors can be added, but only those with listed simulations will be used.
+Every valid Source and Detector listed in the config file will be instantiated in when running the simulation.exe file. Any number of detectors can be added, but only those with listed simulations will be used.
 
 ### How the main() function works
 
