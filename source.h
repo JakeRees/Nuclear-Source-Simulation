@@ -26,18 +26,20 @@ private:
   int id = {0};
   static std::set<int> used_ids;
   double half_life = {1.0};
+  std::string decay_type = {"gamma"};
 
 public:
   Source() = default ;
 
   Source(std::string source_type, double activity, Date initial_acquired,
-        double half_life, int source_id)
+        double half_life, int source_id, std::string decay_type)
   {
     set_type(source_type);
     set_initial_activity(activity);
     aquired = initial_acquired;
     set_half_life(half_life);
     set_id(source_id);
+    set_decay_type(decay_type);
   }
 
   ~Source() 
@@ -55,11 +57,13 @@ public:
   double get_half_life();
   long long get_age(int year, int month, int day);
   long long get_age();
+  std::string get_decay_type();
 
   void set_type(std::string new_type);
   void set_initial_activity(double new_activity);
   void set_id(int new_id);
   void set_half_life(double new_half_life);
+  void set_decay_type(std::string new_type);
 
 };
 

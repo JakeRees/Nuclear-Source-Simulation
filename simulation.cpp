@@ -21,7 +21,19 @@ using std::cin;
 using std::string;
 using std::vector;
 
-void read_config(string file_name, vector<Source>& sources, std::optional<Detector>& detector)
+struct Simulation 
+{
+  string detector;
+  int time;
+
+  Simulation(string detector, double time)
+  {
+    this->detector = detector;
+    this->time = time;
+  }
+};
+
+void read_config(string file_name, vector<Source>& sources, vector<Detector>& detectors)
 {
   /* Open a file and read the coloumns*/
   std::ifstream file(file_name);
@@ -51,9 +63,10 @@ void read_config(string file_name, vector<Source>& sources, std::optional<Detect
       int id;
       string name;
       string date_string;
+      string decay_type;
 
       // Ensures data is of expected type (double, int, string)
-      if (converter >> id >> activity >> half_life >> date_string)
+      if (converter >> id >> activity >> half_life >> date_string >> decay_type)
       {
         std::istringstream iss(date_string);
         std::string part;
@@ -74,7 +87,8 @@ void read_config(string file_name, vector<Source>& sources, std::optional<Detect
         // Remove leading whitespace
         name.erase(0, name.find_first_not_of(" "));
 
-        sources.emplace_back(name, activity, Date(year, month, day), half_life, id);
+        sources.emplace_back(name, activity, Date(year, month, day),
+                             half_life, id, decay_type);
       }
       else
       {
@@ -83,27 +97,21 @@ void read_config(string file_name, vector<Source>& sources, std::optional<Detect
     }
     else if (identifier == "DETECTOR")
     {
-      if (!detector.has_value())
+
+      double gamma_eff, beta_eff, alpha_eff;
+
+      if (converter >> gamma_eff >> beta_eff >> alpha_eff)
       {
-        double efficiency;
+        string name;
+        std::getline(converter, name);
 
-        if (converter >> efficiency)
-        {
-          string name;
-          std::getline(converter, name);
-
-          // Remove leading whitespace
-        name.erase(0, name.find_first_not_of(" "));
-        detector = Detector(name, efficiency);
-        }
-        else
-        {
-          bad_lines.push_back(line_number);
-        }
+        // Remove leading whitespace
+      name.erase(0, name.find_first_not_of(" "));
+      detectors.emplace_back(name, gamma_eff, beta_eff, alpha_eff);
       }
       else
       {
-        cout << "\033[1;33mWarning: Attempted to create multiple detector objects\033[0m";
+        bad_lines.push_back(line_number);
       }
     }
   }
@@ -124,41 +132,51 @@ int main()
 {
 
   vector<Source> sources; 
-  std::optional<Detector> detector = std::nullopt;
+  vector<Detector> detectors;
 
-  read_config("config.txt", sources, detector);
-  int source_count = sources.size();
+  read_config("config.txt", sources, detectors);
   
   int count = 0;
   int long_count = 0;
   int simulation_time = 1;
   int long_simulation_time = 86400;
-  (*detector).flip_status();
 
-  for (int i = 0; i < source_count; i++)
+  for(Detector& detector : detectors) 
+    detector.flip_status();
+
+  for(Source& source : sources)
   {
-    cout << sources[i].get_type() << " (Id: " << sources[i].get_id() << "): " 
-        << "\nSource Age: " << sources[i].get_age() / 86400.0 / 365.0 << " years"
-        << "\nHalf Life: " << sources[i].get_half_life() / 86400.0 / 365.0 << " years"
-        << "\nInitial Activity: " << sources[i].get_initial_activity()
-        << "\nCurrent Activity: " << sources[i].get_activity() << "\n\n";
+    cout << source.get_type() << " (Id: " << source.get_id() << "): " 
+         << "\nSource Age: " << source.get_age() / 86400.0 / 365.0 << " years"
+         << "\nHalf Life: " << source.get_half_life() / 86400.0 / 365.0 << " years"
+         << "\nInitial Activity: " << source.get_initial_activity()
+         << "\nCurrent Activity: " << source.get_activity()
+         << "\nDecay Type: " << source.get_decay_type() << "\n\n";
 
-        count += (*detector).measure(sources[i], simulation_time);
-        long_count += (*detector).measure(sources[i], long_simulation_time);
+    for(Detector& detector : detectors)
+    {
+      count += detector.measure(source);
+      long_count += detector.measure(source, long_simulation_time);
+    }
+
   }
 
-  std::cout << "Detector name: " << (*detector).get_type()
-            << " | Efficiency: " << (*detector).get_efficiency() << "\n\n";
+  for(Detector& detector : detectors)
+  {
+    std::cout << "Detector name: " << detector.get_type()
+          << " | Efficiency: " << detector.get_efficiency("BEtA") * 100 << "%\n\n";
 
-  std::cout << "A total of " << count << " counts where detected by this detector"
-            << " over a total of " << simulation_time << " seconds\n";
+    std::cout << "A total of " << count << " counts where detected by this detector"
+              << " over a total of " << simulation_time << " seconds\n";
 
-  std::cout << "Real estimated count: " << count / (*detector).get_efficiency()
-            << "\n\n";     
+    std::cout << "Real estimated count: " << count / detector.get_efficiency("BEtA")
+              << "\n\n";     
 
-  std::cout << "A total of " << long_count << " counts where detected by this detector"
-            << " over a total of " << long_simulation_time << " seconds\n";
+    std::cout << "A total of " << long_count << " counts where detected by this detector"
+              << " over a total of " << long_simulation_time << " seconds\n";
 
-  std::cout << "Real estimated count: " << long_count / (*detector).get_efficiency()
-            << "\n\n"; 
+    std::cout << "Real estimated count: " << long_count / detector.get_efficiency("BEtA")
+              << "\n\n"; 
+  }
+
 }

@@ -4,6 +4,7 @@
 #include <ctime>
 #include <cmath>
 #include <set>
+#include <algorithm>
 
 // This set is shared across all source objects
 std::set<int> Source::used_ids;
@@ -60,6 +61,12 @@ std::string Source::get_type()
 {
   return type;
 }
+
+std::string Source::get_decay_type()
+{
+  return decay_type;
+}
+
 
 double Source::get_activity()
 {
@@ -133,4 +140,20 @@ void Source::set_half_life(double new_half_life)
   }
 
   half_life = new_half_life;
+}
+
+void Source::set_decay_type(std::string new_type)
+{
+  // Works regardless of capitilisation
+  std::transform(new_type.begin(), new_type.end(), new_type.begin(), ::tolower);
+  if (new_type == "gamma" || new_type == "beta" || new_type == "alpha")
+  {
+    decay_type = new_type;
+  }
+  else
+  {
+    std::cout << "\033[1;31mError: Decay type must be either "
+              << "gamma, beta, or alpha\033[0m" << std::endl;
+    return;
+  }
 }

@@ -26,7 +26,13 @@ I added input validation to the setter methods for source, and used the methods 
 
 The config file used was a simple text file with space separators for each value and an identifier to determine source from detector. To read this file I added a function to the main cpp file, which also validates input from the config file to ensure it is as expected. Initially had trouble with creating sources with the same ids, but found this was because every line of the config file it read it created and destroyed a local copy of a source object. This meant it removed the id from the set of used_ids within the destructor each time, causing the used_ids set to always be empty. This was fixed by bypassing creating a local copy using vector.emplace_back() instead of vector.push_back().
 
+In order to satisfy the "go beyond these sources/detectors" requirement given in the assignment description, I decided to add different decay types (gamma, beta, alpha) for which the detectors have different efficiencies in detecting (0% means cannot detect at all). This way you can add different sources which decay through different paths. The three given in the assignment are all gamma emitters, and I have added 2 extra sources, Strontium-90 (A beta emitter) and Americium-241 (An alpha emitter).
+
 ## How to use this program
+
+This program generates realistic count measurements for a given detector (with a known efficiency) by simulating the counts using a poisson distribution and the given source activity. The simulation time can be set to anything the user wants (the default is counts over the course of 1 second). This can be done for any number of sources and detectors.
+
+The attached simulation.cpp file contains an example simulation to test all given sources across any simulation parameters set in config.txt.
 
 ### How to change the config file
 
@@ -34,9 +40,11 @@ Values in each line are separated either by a space " " or a comma ","
 
 Lines in the config file are identified by the type identifier string located in the first column:
 
-- SOURCE - creates a source object with values: ID Activity HalfLife AquiryDate Name
-- DETECTOR - creates a detector object with values: Name, Efficiency
+- SOURCE - creates a source object with values: ID Activity HalfLife AquiryDate EmissionType Name
+- DETECTOR - creates a detector object with values: Name, GammaEfficiency, BetaEfficiency, AlphaEfficiency
 - SIMULATION - runs a simulation for all sources with parameters: Time, Detector
+
+Any number of detectors can be added, but only those with listed simulations will be used.
 
 ### How the main() function works
 
