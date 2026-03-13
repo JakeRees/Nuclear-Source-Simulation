@@ -73,12 +73,9 @@ double Source::get_activity()
   return initial_activity * pow(2.0f, -get_age()/half_life);
 }
 
+// Have to duplicate instead of using default parameters due to runtime restrictions
 double Source::get_activity(int year, int month, int day)
 {
-  // Calculates the source activity at a given date
-  if ((year < aquired.year) ||  (month < aquired.month) || (day < aquired.day))
-    return 0.0;
-  
   return initial_activity * pow(2.0f, -get_age(year, month, day)/half_life);
 }
 
@@ -113,7 +110,7 @@ void Source::set_aquiry_date(Date date)
   if (!aquired.is_valid_date(date.year, date.month, date.day))
   { 
     std::cout << "\033[1;31mError: Date is not valid for " << get_type() 
-              << ". The default date of 1900-01-01 has been used. \033[0m"
+              << ". Date set to 1900-01-01 instead. \033[0m"
               << std::endl;
     return;
   }
@@ -125,7 +122,9 @@ void Source::set_initial_activity(double new_activity)
 {
   if (new_activity < 0)
   {
-    std::cout << "\033[1;31mError: Activity must be positive\033[0m" << std::endl;
+    std::cout << "\033[1;31mError: Activity must be positive\033[0m"
+              << ". Activity set to 100 instead. \033[0m"
+              << std::endl;
     return;
   }
 
@@ -156,7 +155,9 @@ void Source::set_half_life(double new_half_life)
 {
   if (new_half_life < 0)
   {
-    std::cout << "\033[1;31mError: Half life must be positive\033[0m" << std::endl;
+    std::cout << "\033[1;31mError: Half life must be positive\033[0m"
+              << ". Half life set to 86400 instead. \033[0m"
+              << std::endl;
     return;
   }
 

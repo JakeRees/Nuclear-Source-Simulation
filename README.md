@@ -1,7 +1,12 @@
 # Nuclear Source Simulation
-Includes a source class and detector class, through which simple nuclear decay simulations can be ran. An example test simulation is included in simulation.cpp, with input from a config file.
 
-## Development Timeline
+## 🌟 Highlights
+
+- Create realistic nuclear source objects with different decay types
+- Create realistic detectors with distinct efficiencies
+- Run a test simulation for given sources and detectors using included config file
+
+## ⌛ Development Timeline
 
 ### Disclosure of Delegation to Generative AI:
 
@@ -22,18 +27,18 @@ All other code was written and designed by me with the aid of the internet.
 
 **Note: Sources given in slide includes Co-92, which isn't a real isotope of Cobalt, so I changed this to Co-60, a real isotope used in nuclear physics.**
 
-First created a skeleton source and detector class. I then, using the help of claude, created an algorithm to calculate the age in seconds of a given source. I then filled in the getters and setters for both classes, and improved the get_activity method to calculate the activity at a given time using the inverse exponential formula and the half life.
+First created a skeleton source and detector class. I then, using the help of claude, created an algorithm to calculate the age in seconds of a given source (using the given aquiry date). I then filled in the getters and setters for both classes, and improved the get_activity method to calculate the activity at a given time using the inverse exponential formula and the half life (as well as the sources age at that given time).
 
 I added input validation to the setter methods for source, and used the methods in the class constructor to avoid duplicating the validation code. The random count function added to the detector class was originally calculated using a square distribution around the mean value, generating a random number of counts over a given time. I changed this to use a Poisson distribution to better model real nuclear physics. I overloaded this function, so that if no time is given it defaults to a time period of 1 second.
 
-The config file used used is a simple text file with space separators for each value and an identifier to determine source from detector. To read this file I added a function to the main cpp file, which also validates input from the config file to ensure it is as expected. Initially had trouble with creating sources with the same ids, but found this was because every line of the config file it read it created and destroyed a local copy of a source object. This meant it removed the id from the set of used_ids within the destructor each time, causing the used_ids set to always be empty. This was fixed by bypassing creating a local copy using vector.emplace_back() instead of vector.push_back().
+The config file used used is a plain text file with space separators for each value and an identifier to determine source from detector. To read this file I added a function to the main cpp file, which also validates input from the config file to ensure it is as expected. Initially had trouble with creating sources with the same ids, but found this was because every line of the config file it read it created and destroyed a local copy of a source object. This meant it removed the id from the set of used_ids within the destructor each time, causing the used_ids set to always be empty. This was fixed by bypassing creating a local copy using vector.emplace_back() instead of vector.push_back().
 
-In order to satisfy the "go beyond these sources/detectors" requirement given in the assignment description, I decided to add different decay types (gamma, beta, alpha) for which the detectors have different efficiencies in detecting (0% means cannot detect at all). This way you can add different sources which decay through different paths. The three given in the assignment are all gamma emitters, and I have added 2 extra sources, Strontium-90 (A beta emitter) and Americium-241 (An alpha emitter). I also added 4 different test detectors, a scintillator with 100% efficiency, and 3 others specialised for a specific type of emission (gamme, beta, alpha).
+In order to satisfy the "go beyond these sources/detectors" requirement given in the assignment description, I decided to add different decay types (gamma, beta, alpha) for which the detectors have different efficiencies in detecting (0% means cannot detect at all). This way you can add different sources which decay through different paths. The three given in the assignment are all gamma emitters, and I have added 2 extra sources, Strontium-90 (A beta emitter) and Americium-241 (An alpha emitter). I also added 4 different test detectors, a scintillator with 100% efficiency, and 3 others specialised for a specific type of emission (gamma, beta, alpha).
 
-## How to use this program
+## 🚀 Usage Instructions
 
-This program can be compiled using the following compilation command:
-`g++ simulation.cpp Source.cpp Detector.cpp -Wall -o simulation.exe -std=gnu++17`
+This program can be compiled using the following compilation command:  
+`g++ simulation.cpp Source.cpp Detector.cpp -Wall -o simulation.exe -std=gnu++17`  
 Or alternatively by using the included MakeFile.
 
 This program generates realistic count measurements for a given detector (with a known efficiency) by simulating the counts using a poisson distribution and the given source activity. The simulation time can be set to anything the user wants (the default is counts over the course of 1 second). This can be done for any number of sources and detectors. The attached simulation.cpp file contains an example simulation to test all given sources for all given detectors in config.txt.
@@ -73,8 +78,17 @@ Values in each line are separated either by a space " " or a comma ","
 
 Lines in the config file are identified by the type identifier string located in the first column:
 
-- SOURCE - creates a source object with values: ID Activity HalfLife AquiryDate EmissionType Name
-- DETECTOR - creates a detector object with values: Name, GammaEfficiency, BetaEfficiency, AlphaEfficiency
+- SOURCE - creates a source object with values:  
+ID Activity (count/second),  
+HalfLife (in seconds),  
+AquiryDate (year-month-day),  
+EmissionType (gamma, beta, alpha),  
+Name
+- DETECTOR - creates a detector object with values:    
+GammaEfficiency (0-1),  
+BetaEfficiency (0-1),  
+AlphaEfficiency (0-1),  
+Name
 
 Every valid Source and Detector listed in the config file will be instantiated when running the simulation.exe file. Any number of detectors can be added, and each will be tested using every given source.
 

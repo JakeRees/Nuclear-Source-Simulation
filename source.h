@@ -37,11 +37,11 @@ class Source
 {
 private:
   std::string type = {"None"};
-  double initial_activity = {0.0};
+  double initial_activity = {100.0};
   Date aquired = {Date(1900, 1, 1)};
   int id = {0};
   static std::set<int> used_ids;
-  double half_life = {1.0};
+  double half_life = {86400.0};
   std::string decay_type = {"gamma"};
 
 public:
