@@ -75,6 +75,7 @@ public:
   long long get_age(int year, int month, int day);
   long long get_age();
   std::string get_decay_type();
+  void print_info();
 
   void set_type(std::string new_type);
   void set_aquiry_date(Date = Date(1900, 1, 1));

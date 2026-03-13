@@ -99,6 +99,16 @@ double Source::get_half_life()
   return half_life;
 }
 
+void Source::print_info()
+{
+  std::cout << get_type() << " (Id: " << get_id() << "): " 
+            << "\nSource Age: " << get_age() / 86400.0 / 365.0 << " years"
+            << "\nHalf Life: " << get_half_life() / 86400.0 / 365.0 << " years"
+            << "\nInitial Activity: " << get_initial_activity()
+            << "\nCurrent Activity: " << get_activity()
+            << "\nDecay Type: " << get_decay_type();
+}
+
 void Source::set_type(std::string new_type)
 {
   type = new_type;
@@ -122,9 +132,7 @@ void Source::set_initial_activity(double new_activity)
 {
   if (new_activity < 0)
   {
-    std::cout << "\033[1;31mError: Activity must be positive\033[0m"
-              << ". Activity set to 100 instead. \033[0m"
-              << std::endl;
+    std::cout << "\033[1;31mError: Activity must be positive\033[0m" << std::endl;
     return;
   }
 
@@ -155,9 +163,7 @@ void Source::set_half_life(double new_half_life)
 {
   if (new_half_life < 0)
   {
-    std::cout << "\033[1;31mError: Half life must be positive\033[0m"
-              << ". Half life set to 86400 instead. \033[0m"
-              << std::endl;
+    std::cout << "\033[1;31mError: Half life must be positive\033[0m" << std::endl;
     return;
   }
 
@@ -174,8 +180,8 @@ void Source::set_decay_type(std::string new_type)
   }
   else
   {
-    std::cout << "\033[1;31mError: Decay type must be either "
-              << "gamma, beta, or alpha\033[0m" << std::endl;
-    return;
+    std::cout << "\033[1;31mError: Decay type must be either gamma, beta, or "
+              << "alpha. Defaulted to gamma.\033[0m" << std::endl;
+    decay_type = "gamma";
   }
 }

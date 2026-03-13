@@ -2,8 +2,8 @@
                               Jake Rees, 11307374
                            University of Manchester
 
-This program reads, uses source and detector objects generated with information
-given in a config file to run a basic nuclear decay detection simulation.
+This program reads a config file to generate source and detector objects from
+the included classes. It then runs a basic nuclear decay detection simulation.
 */
 
 #include<iostream>
@@ -68,27 +68,36 @@ void read_config(string file_name, vector<Source>& sources, vector<Detector>& de
       // Ensures data is of expected type (double, int, string)
       if (converter >> id >> activity >> half_life >> date_string >> decay_type)
       {
-        std::istringstream iss(date_string);
-        std::string part;
-        
-        int year, month, day;
+        try {
+          std::istringstream iss(date_string);
+          std::string part;
+          
+          int year, month, day;
 
-        std::getline(iss, part, '-');
-        year = std::stoi(part);
+          std::getline(iss, part, '-');
+          year = std::stoi(part);
 
-        std::getline(iss, part, '-');
-        month = std::stoi(part);
+          std::getline(iss, part, '-');
+          month = std::stoi(part);
 
-        std::getline(iss, part, '-');
-        day = std::stoi(part);
+          std::getline(iss, part, '-');
+          day = std::stoi(part);
 
-        std::getline(converter, name);
+          std::getline(converter, name);
 
-        // Remove leading whitespace
-        name.erase(0, name.find_first_not_of(" "));
+          // Remove leading whitespace
+          name.erase(0, name.find_first_not_of(" "));
 
-        sources.emplace_back(name, activity, Date(year, month, day),
-                             half_life, id, decay_type);
+          sources.emplace_back(name, activity, Date(year, month, day),
+                              half_life, id, decay_type);
+        }
+        catch (std::invalid_argument& e) 
+        {
+          std::cerr << "\033[1;31mError: invalid date format on line "
+                    << line_number << ". Expected YYYY-MM-DD\033[0m" 
+                    << std::endl;
+          bad_lines.push_back(line_number);
+        }
       }
       else
       {
@@ -118,7 +127,8 @@ void read_config(string file_name, vector<Source>& sources, vector<Detector>& de
 
   if (!bad_lines.empty())
   {
-    cout << "\033[1;33mWarning: Couldn't read data from following lines: ";
+    cout << "\033[1;33mWarning: Couldn't read data from following lines " 
+         << "(Likely input wrong data type): ";
     for (std::size_t i = 0; i < bad_lines.size(); i++)
     {
       cout << bad_lines[i] << ", ";
@@ -139,18 +149,14 @@ int main()
   int count = 0;
   int simulation_time = 1;
 
+  // By default detector is off
   for(Detector& detector : detectors) 
     detector.flip_status();
 
   // For each source print out the source info and measure with each detector
   for(Source& source : sources)
   {
-    cout << source.get_type() << " (Id: " << source.get_id() << "): " 
-         << "\nSource Age: " << source.get_age() / 86400.0 / 365.0 << " years"
-         << "\nHalf Life: " << source.get_half_life() / 86400.0 / 365.0 << " years"
-         << "\nInitial Activity: " << source.get_initial_activity()
-         << "\nCurrent Activity: " << source.get_activity()
-         << "\nDecay Type: " << source.get_decay_type();
+    source.print_info();
 
     cout << "\nCounts detected by: ";
     for(Detector& detector : detectors)

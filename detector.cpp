@@ -21,14 +21,14 @@ int Detector::measure(Source source, double time) {
     return 0;
   }
   
-  // Determine mean expected counts - accounting for detector efficiency
+  // Determine mean expected counts
   double expected_counts = source.get_activity() * time ;
-  expected_counts *= efficiency.get(source.get_decay_type());
   // Using a poisson distribution to more accurately simulate real physics
   static std::random_device random_seed;
   static std::mt19937 gen(random_seed());
   std::poisson_distribution<int> poisson(expected_counts);
-  int count = poisson(gen);
+  // Account for detector efficiency
+  int count = poisson(gen) * efficiency.get(source.get_decay_type());;
   total_counts += count;
 
   return count;

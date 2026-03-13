@@ -57,8 +57,8 @@ This class is a blueprint for nuclear source-type elements.
 - decay_type: What type of decay process does each source perform (gamma, beta, alpha).
 
 **Methods:**
--long long get_age(Date date): Returns the age of the source object for a given date in seconds
--long long get_activity(Date date): Returns the activity of the source object for a given date in decays/second
+- long long get_age(Date date): Returns the age of the source object for a given date in seconds
+- long long get_activity(Date date): Returns the activity of the source object for a given date in decays/second
 
 <ins>Detector:</ins>
 This class is a blueprint for detector-type objects, which can be used to simulate measurements of the source objects.
@@ -79,7 +79,8 @@ Values in each line are separated either by a space " " or a comma ","
 Lines in the config file are identified by the type identifier string located in the first column:
 
 - SOURCE - creates a source object with values:  
-ID Activity (count/second),  
+ID (Unique integer),  
+Activity (count/second),  
 HalfLife (in seconds),  
 AquiryDate (year-month-day),  
 EmissionType (gamma, beta, alpha),  
@@ -94,4 +95,4 @@ Every valid Source and Detector listed in the config file will be instantiated w
 
 ### How the main() function works
 
-This function reads the config file using the read_config() function. It then outputs the information for all objects that were successfully read from the config file, and passes them in the detector object to measure a simulated random count using the source activity at that time. It outputs a combined measurement for all sources - not for each individual source.
+This function reads the config file using the read_config() function. It then outputs the information for all objects that were successfully read from the config file, and passes them in the detector object to measure a simulated random count using the source activity at that time. It outputs the measurements for all sources for all detectors, then the total counts detected by each detector over the entire simulation (From all sources).
