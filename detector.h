@@ -44,6 +44,7 @@ public:
   }
 
   ~Detector(){}
+  
   std::string get_type();
   int get_counts();
   double get_efficiency(std::string type);

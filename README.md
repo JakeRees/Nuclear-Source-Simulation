@@ -24,17 +24,19 @@ All other code was written and designed by me with the aid of the internet.
 
 First created a skeleton source and detector class. I then, using the help of claude, created an algorithm to calculate the age in seconds of a given source. I then filled in the getters and setters for both classes, and improved the get_activity method to calculate the activity at a given time using the inverse exponential formula and the half life.
 
-I added input validation to the setter methods for source, and used the methods in the class constructor to avoid duplicating the validation code. The random count function added to the detector class was originally a calculated using a square distribution around the mean value, generating a random number of counts over a given time. I changed this to use a Poisson distribution to better model real nuclear physics. I overloaded this function, so that if no time is given it defaults to a time period of 1 second.
+I added input validation to the setter methods for source, and used the methods in the class constructor to avoid duplicating the validation code. The random count function added to the detector class was originally calculated using a square distribution around the mean value, generating a random number of counts over a given time. I changed this to use a Poisson distribution to better model real nuclear physics. I overloaded this function, so that if no time is given it defaults to a time period of 1 second.
 
-The config file used was a simple text file with space separators for each value and an identifier to determine source from detector. To read this file I added a function to the main cpp file, which also validates input from the config file to ensure it is as expected. Initially had trouble with creating sources with the same ids, but found this was because every line of the config file it read it created and destroyed a local copy of a source object. This meant it removed the id from the set of used_ids within the destructor each time, causing the used_ids set to always be empty. This was fixed by bypassing creating a local copy using vector.emplace_back() instead of vector.push_back().
+The config file used used is a simple text file with space separators for each value and an identifier to determine source from detector. To read this file I added a function to the main cpp file, which also validates input from the config file to ensure it is as expected. Initially had trouble with creating sources with the same ids, but found this was because every line of the config file it read it created and destroyed a local copy of a source object. This meant it removed the id from the set of used_ids within the destructor each time, causing the used_ids set to always be empty. This was fixed by bypassing creating a local copy using vector.emplace_back() instead of vector.push_back().
 
-In order to satisfy the "go beyond these sources/detectors" requirement given in the assignment description, I decided to add different decay types (gamma, beta, alpha) for which the detectors have different efficiencies in detecting (0% means cannot detect at all). This way you can add different sources which decay through different paths. The three given in the assignment are all gamma emitters, and I have added 2 extra sources, Strontium-90 (A beta emitter) and Americium-241 (An alpha emitter).
+In order to satisfy the "go beyond these sources/detectors" requirement given in the assignment description, I decided to add different decay types (gamma, beta, alpha) for which the detectors have different efficiencies in detecting (0% means cannot detect at all). This way you can add different sources which decay through different paths. The three given in the assignment are all gamma emitters, and I have added 2 extra sources, Strontium-90 (A beta emitter) and Americium-241 (An alpha emitter). I also added 4 different test detectors, a scintillator with 100% efficiency, and 3 others specialised for a specific type of emission (gamme, beta, alpha).
 
 ## How to use this program
 
-This program generates realistic count measurements for a given detector (with a known efficiency) by simulating the counts using a poisson distribution and the given source activity. The simulation time can be set to anything the user wants (the default is counts over the course of 1 second). This can be done for any number of sources and detectors.
+This program can be compiled using the following compilation command:
+`g++ simulation.cpp Source.cpp Detector.cpp -Wall -o simulation.exe -std=gnu++17`
+Or alternatively by using the included MakeFile.
 
-The attached simulation.cpp file contains an example simulation to test all given sources across any simulation parameters set in config.txt.
+This program generates realistic count measurements for a given detector (with a known efficiency) by simulating the counts using a poisson distribution and the given source activity. The simulation time can be set to anything the user wants (the default is counts over the course of 1 second). This can be done for any number of sources and detectors. The attached simulation.cpp file contains an example simulation to test all given sources for all given detectors in config.txt.
 
 ### Class Documentation
 
@@ -42,12 +44,12 @@ The attached simulation.cpp file contains an example simulation to test all give
 This class is a blueprint for nuclear source-type elements.
 
 **Attributes:**
--string type: The name of the source/element (e.g. Na-22)
--int id: A unique number attached to each object used for identification.
--double initial_activity: The activity of the source at the time of acquisition.
--Date aquired: the date at which the source was aquired - a struct containing the year, month and day.
--double half_life: A number representing the rate of decay of the source.
--decay_type: What type of decay process does each source perform (gamma, beta, alpha).
+- string type: The name of the source/element (e.g. Na-22)
+- int id: A unique number attached to each object used for identification.
+- double initial_activity: The activity of the source at the time of acquisition.
+- Date aquired: the date at which the source was aquired - a struct containing the year, month and day.
+- double half_life: A number representing the rate of decay of the source.
+- decay_type: What type of decay process does each source perform (gamma, beta, alpha).
 
 **Methods:**
 -long long get_age(Date date): Returns the age of the source object for a given date in seconds
@@ -57,13 +59,13 @@ This class is a blueprint for nuclear source-type elements.
 This class is a blueprint for detector-type objects, which can be used to simulate measurements of the source objects.
 
 **Attributes:**
--string type: The type of detector (e.g. Scintillator).
--bool is_on: Determins the on/off status of the detector (Measurements can only be performed when on).
--int total_counts: Stores the total counts over all measurements until reset.
--Efficiency efficiency: A struct containing the detector efficiency for each decay type (gamma, beta, alpha).
+- string type: The type of detector (e.g. Scintillator).
+- bool is_on: Determins the on/off status of the detector (Measurements can only be performed when on).
+- int total_counts: Stores the total counts over all measurements until reset.
+- Efficiency efficiency: A struct containing the detector efficiency for each decay type (gamma, beta, alpha).
 
 **Methods:**
--long long measure(Source source, double time): Returns a random count measurement over a given time using a poisson distribution.
+- long long measure(Source source, double time): Returns a random count measurement over a given time using a poisson distribution.
 
 ### How to modify the config file
 
@@ -73,10 +75,9 @@ Lines in the config file are identified by the type identifier string located in
 
 - SOURCE - creates a source object with values: ID Activity HalfLife AquiryDate EmissionType Name
 - DETECTOR - creates a detector object with values: Name, GammaEfficiency, BetaEfficiency, AlphaEfficiency
-- SIMULATION - runs a simulation for all sources with parameters: Time, Detector
 
-Every valid Source and Detector listed in the config file will be instantiated in when running the simulation.exe file. Any number of detectors can be added, but only those with listed simulations will be used.
+Every valid Source and Detector listed in the config file will be instantiated when running the simulation.exe file. Any number of detectors can be added, and each will be tested using every given source.
 
 ### How the main() function works
 
-This function reads the config file using the read_config() function. It then outputs the information for all objects that were successfully read from the config file, and passes them in the detector object to measure a simulated random count using the source activity at that time.
+This function reads the config file using the read_config() function. It then outputs the information for all objects that were successfully read from the config file, and passes them in the detector object to measure a simulated random count using the source activity at that time. It outputs a combined measurement for all sources - not for each individual source.

@@ -137,13 +137,12 @@ int main()
   read_config("config.txt", sources, detectors);
   
   int count = 0;
-  int long_count = 0;
   int simulation_time = 1;
-  int long_simulation_time = 86400;
 
   for(Detector& detector : detectors) 
     detector.flip_status();
 
+  // For each source print out the source info and measure with each detector
   for(Source& source : sources)
   {
     cout << source.get_type() << " (Id: " << source.get_id() << "): " 
@@ -151,32 +150,30 @@ int main()
          << "\nHalf Life: " << source.get_half_life() / 86400.0 / 365.0 << " years"
          << "\nInitial Activity: " << source.get_initial_activity()
          << "\nCurrent Activity: " << source.get_activity()
-         << "\nDecay Type: " << source.get_decay_type() << "\n\n";
+         << "\nDecay Type: " << source.get_decay_type();
 
+    cout << "\nCounts detected by: ";
     for(Detector& detector : detectors)
     {
-      count += detector.measure(source);
-      long_count += detector.measure(source, long_simulation_time);
+      count = detector.measure(source, simulation_time);
+      cout << detector.get_type() << ": " << count << ", ";
     }
 
+    cout << "\n\n";
   }
 
   for(Detector& detector : detectors)
   {
     std::cout << "Detector name: " << detector.get_type()
-          << " | Efficiency: " << detector.get_efficiency("BEtA") * 100 << "%\n\n";
+              << " | Efficiency: Gamma: " << detector.get_efficiency("gamma") * 100 
+              << "%, Beta: " << detector.get_efficiency("beta") * 100
+              << "%, Alpha: " << detector.get_efficiency("alpha") * 100 << "%\n";
 
-    std::cout << "A total of " << count << " counts where detected by this detector"
-              << " over a total of " << simulation_time << " seconds\n";
+    std::cout << "A total of " << detector.get_counts() << " counts where detected by"
+              << " this detector over a total of " << simulation_time << " seconds"
+              << " (From every source)\n\n\n";
 
-    std::cout << "Real estimated count: " << count / detector.get_efficiency("BEtA")
-              << "\n\n";     
-
-    std::cout << "A total of " << long_count << " counts where detected by this detector"
-              << " over a total of " << long_simulation_time << " seconds\n";
-
-    std::cout << "Real estimated count: " << long_count / detector.get_efficiency("BEtA")
-              << "\n\n"; 
+    // Reset detector after simulation has been complete
+    detector.reset_counts();
   }
-
 }

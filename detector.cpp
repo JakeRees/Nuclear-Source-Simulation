@@ -29,6 +29,7 @@ int Detector::measure(Source source, double time) {
   static std::mt19937 gen(random_seed());
   std::poisson_distribution<int> poisson(expected_counts);
   int count = poisson(gen);
+  total_counts += count;
 
   return count;
 }
