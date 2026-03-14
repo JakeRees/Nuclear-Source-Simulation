@@ -60,6 +60,7 @@ public:
 
   ~Source() 
   {
+    // Free up id
     if (used_ids.count(id)) {
       used_ids.erase(id);
     }

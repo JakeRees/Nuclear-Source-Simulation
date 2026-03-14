@@ -4,7 +4,6 @@
 #include<iostream>
 #include<string>
 #include<cmath>
-#include <ctime>
 #include "Source.h"
 
 struct Efficiency {
@@ -20,7 +19,8 @@ struct Efficiency {
         if (type == "beta")  return beta;
         if (type == "alpha") return alpha;
         
-        std::cout << "\033[1;31mError: Unknown emitter type: " << type << "\033[0m" << std::endl;
+        std::cout << "\033[1;31mError: Unknown emitter type: " << type 
+                  << "\033[0m" << std::endl;
         return 0.0;
     }
 };

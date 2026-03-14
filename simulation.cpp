@@ -8,30 +8,15 @@ the included classes. It then runs a basic nuclear decay detection simulation.
 
 #include<iostream>
 #include<iomanip>
-#include <ctime>
-#include <chrono>
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include <optional>
 #include "Source.h"
 #include "Detector.h"
 using std::cout;
 using std::cin;
 using std::string;
 using std::vector;
-
-struct Simulation 
-{
-  string detector;
-  int time;
-
-  Simulation(string detector, double time)
-  {
-    this->detector = detector;
-    this->time = time;
-  }
-};
 
 void read_config(string file_name, vector<Source>& sources, vector<Detector>& detectors)
 {
@@ -140,7 +125,6 @@ void read_config(string file_name, vector<Source>& sources, vector<Detector>& de
 
 int main()
 {
-
   vector<Source> sources; 
   vector<Detector> detectors;
 
